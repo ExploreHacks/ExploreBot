@@ -24,6 +24,7 @@ config.ts
 yarn.lock
 
 # Environment variables
+src/.env
 .env.local
 .env.development.local
 .env.test.local
