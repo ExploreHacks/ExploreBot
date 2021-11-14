@@ -1,0 +1,27 @@
+Exact commands:
+
+For those with admin role:
+.hours @user 2
+.hours @website 2
+.ep @user 5        (explore points)
+For Explore Hacks members:
+.hours 2 (gives current user 2 hours)
+.ep @user
+
+By default delete Leo’s messages if they end with ‘.’ (This is completely serious LMFAO YES FULLY APPROVED)
+
+Reminders:
+If task has high priority:
+Send reminder 48 hours and 24 hours before task is due
+Send notification to member’s manager and member after it is due
+If task has medium/low priority
+Send reminder 24 hours before task is due
+Send notification to member’s manager and member after it is due
+
+
+For managing trello backend stuff:
+Have a .toml/.json/whatever to map trello users to discord users
+
+
+Use nodejs timers or be lazy and use https://www.npmjs.com/package/node-cron or https://www.npmjs.com/package/node-schedule to go get all tasks which have the “complete” key set to false, then go embed that into discord.
+

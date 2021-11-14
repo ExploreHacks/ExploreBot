@@ -1,9 +1,8 @@
 import './lib/setup';
 import { LogLevel, SapphireClient } from '@sapphire/framework';
-
+//TODO: extend me later
 const client = new SapphireClient({
-	defaultPrefix: 'dr!',
-	regexPrefix: /^(hey +)?bot[,! ]/i,
+	defaultPrefix: '.',
 	caseInsensitiveCommands: true,
 	logger: {
 		level: LogLevel.Debug
