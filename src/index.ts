@@ -1,5 +1,6 @@
 import './lib/setup';
 import { LogLevel, SapphireClient } from '@sapphire/framework';
+// import { resolve } from 'path/posix';
 //TODO: extend me later
 const client = new SapphireClient({
 	defaultPrefix: '.',
@@ -33,4 +34,52 @@ const main = async () => {
 	}
 };
 
+// reminder code. idk where else to put it so i'll keep it here for now
+// ====================================================================
+
+// function resolveAfter2Seconds() {
+// 	var today = new Date();
+// 	console.log(today.getMinutes())
+// 	while (today.getMinutes() != 21){}
+// 	// return new Promise(resolve => { resolve("helloooooooo im tryna remind you!!") })
+// 	return "hi"
+
+// 	// while (today.getMinutes !)
+
+// 	return new Promise(resolve => {
+// 		setTimeout(() => {
+// 			resolve('resolved');
+// 		}, 2000);
+// 	});
+// }
+
+function waitUntilTime() {
+
+	var dueDate = new Date("11/14/2021 11:14:00 PM").getTime()
+	var currentTime = new Date().getTime()
+	var msdifference = dueDate - currentTime
+	// setTimeout(() => console.log("timer started"), msdifference);
+		
+	if (msdifference < 0) return -1
+	console.log("starting timer of " + msdifference+" ms")
+	return new Promise(resolve => {setTimeout(() => { resolve('timer ended'); }, msdifference);});
+	// return "it is time"
+}
+
+async function asyncCall() {
+	console.log('calling')
+	// const result = await resolveAfter2Seconds();
+	const result = await waitUntilTime()
+	console.log(result)
+	// expected output: "resolved"
+}
+
+asyncCall();
+
+// reminder code. idk where else to put it so i'll keep it here for now
+// ====================================================================
+
+
+
 main();
+
