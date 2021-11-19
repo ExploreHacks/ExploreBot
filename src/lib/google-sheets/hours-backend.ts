@@ -5,11 +5,22 @@ export function addHoursToRoles(user: GuildMember, hours: Number) {
     hours = hours;
 }
 
-export async function addHoursToUser(user: User, hours: Number) {
-    user = user;
+export async function addHoursToUser(user: User, hours: number) {
     hours = hours;
+    user = user;
 
-    await container.sheets.loadInfo(); // loads document properties and worksheets
-    console.log(container.sheets.title);
-    await container.sheets.updateProperties({ title: 'renamed doc' });
+    let resource = {
+        values: [[user.username, hours, new Date()]]
+    }
+
+    await container.sheets.spreadsheets.values.append({
+        spreadsheetId: process.env.SPREAD_SHEET_ID,
+        range: user.username + "!A:C",
+        valueInputOption: "USER_ENTERED",
+        insertDataOption: "INSERT_ROWS",
+        resource
+    })
+
+
+    
 }
