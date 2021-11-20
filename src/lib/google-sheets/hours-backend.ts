@@ -13,7 +13,7 @@ export async function addHoursToUser(user: User, hours: number, message: Message
 	user = user;
 
 	let resource = {
-		values: [[user.username, hours, new Date()]]
+		values: [[user.username, hours, new Date().toLocaleString]]
 	};
 	console.log('running method...');
 	await container.sheets.spreadsheets.values.append(
@@ -37,7 +37,6 @@ export async function addHoursToUser(user: User, hours: number, message: Message
 				container.logger.debug(data);
 
 				if (data!.indexOf(user.username) == -1) {
-					container.logger.debug('I am here');
 					try {
 						const request = {
 							spreadsheetId: process.env.SPREAD_SHEET_ID,
