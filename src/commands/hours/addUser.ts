@@ -5,15 +5,14 @@ import type { Message } from 'discord.js';
 import { addHoursToUser } from '../../lib/google-sheets/hours-backend';
 
 @ApplyOptions<CommandOptions>({
-    description: "adds hours to a single user",
-    aliases: ['ahu']
+	description: 'adds hours to a single user',
+	aliases: ['ahu']
 })
 export class AddUserHours extends Command {
-    public async messageRun(message: Message, args: Args) {
-        const user = await args.pick('user');
-        const hours = await args.pick('number');
-        addHoursToUser(user, hours);
-        send(message, "user hours successfully added");
-    }
-
+	public async messageRun(message: Message, args: Args) {
+		const user = await args.pick('user');
+		const hours = await args.pick('number');
+		addHoursToUser(user, hours, message);
+		send(message, 'user hours successfully added');
+	}
 }
