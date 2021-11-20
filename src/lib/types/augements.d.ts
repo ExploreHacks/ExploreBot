@@ -15,5 +15,6 @@ declare module '@sapphire/pieces' {
 		googleClient: any;
 		metaData: any;
 		auth: GoogleAuth;
+                leo: string;
 	}
 }
