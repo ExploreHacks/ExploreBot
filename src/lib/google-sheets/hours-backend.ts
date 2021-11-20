@@ -8,21 +8,20 @@ export async function addHoursToRoles(role: Role, hours: number, message: Messag
 	});
 }
 
-export async function addHoursToUser(user: User, hours: number, message: Message) {
+export async function addHoursToUser(user: User, hours: number, message: Message ) {
 	hours = hours;
 	user = user;
 
 	let resource = {
-		values: [[user.username, hours, new Date().toLocaleString]]
+		values: [[user.username, hours, new Date().toLocaleString()]]
 	};
-	console.log('running method...');
 	await container.sheets.spreadsheets.values.append(
 		{
 			spreadsheetId: process.env.SPREAD_SHEET_ID,
 			range: user.username + '!A:C',
 			valueInputOption: 'USER_ENTERED',
 			insertDataOption: 'INSERT_ROWS',
-			// @ts-ignore: Fucking typescript on drugs
+                                                        // @ts-ignore: asdf
 			resource
 		},
 		async (err: Error) => {
@@ -40,6 +39,7 @@ export async function addHoursToUser(user: User, hours: number, message: Message
 					try {
 						const request = {
 							spreadsheetId: process.env.SPREAD_SHEET_ID,
+                                                        // @ts-ignore: asdf
 							resource: {
 								requests: [
 									{
