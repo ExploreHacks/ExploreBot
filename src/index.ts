@@ -1,6 +1,5 @@
 import './lib/setup';
 import { LogLevel, SapphireClient, container } from '@sapphire/framework';
-import { google } from 'googleapis';
 //TODO: extend me later
 const client = new SapphireClient({
 	defaultPrefix: '.',
@@ -24,21 +23,6 @@ const client = new SapphireClient({
 
 const main = async () => {
 	try {
-		container.auth = new google.auth.GoogleAuth({
-			keyFile: 'src/lib/google-sheets/credentials.json',
-
-			scopes: 'https://www.googleapis.com/auth/spreadsheets'
-		});
-
-		container.googleClient = await container.auth.getClient();
-
-		container.sheets = google.sheets({ version: 'v4', auth: container.googleClient });
-
-		container.metaData = await container.sheets.spreadsheets.get({
-			auth: container.auth,
-			spreadsheetId: process.env.SPREAD_SHEET_ID!
-		});
-
 		client.logger.info('Logging in');
 		await client.login();
 		client.logger.info('logged in');

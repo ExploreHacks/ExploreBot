@@ -1,6 +1,7 @@
 import type { ListenerOptions, PieceContext } from '@sapphire/framework';
 import { Listener, Store } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, white, yellow } from 'colorette';
+import { google } from 'googleapis';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -14,11 +15,29 @@ export class UserEvent extends Listener {
 		});
 	}
 
-	public run() {
+	public async run() {
+                this.container.logger.debug(await this.connectToSpreadsheet() == "200" ? "Connected to GoogleSheets" : "Connection to GoogleSheets Failed, you probably fucked something up")
 		this.printBanner();
 		this.printStoreDebugInformation();
 	}
 
+        private async connectToSpreadsheet() {
+		this.container.auth = new google.auth.GoogleAuth({
+			keyFile: 'src/lib/google-sheets/credentials.json',
+
+			scopes: 'https://www.googleapis.com/auth/spreadsheets'
+		});
+
+		this.container.googleClient = await this.container.auth.getClient();
+
+		this.container.sheets = google.sheets({ version: 'v4', auth: this.container.googleClient });
+
+		this.container.metaData = await this.container.sheets.spreadsheets.get({
+			auth: this.container.auth,
+			spreadsheetId: process.env.SPREAD_SHEET_ID!
+		});
+                return this.container.metaData.status;
+        }
 	private printBanner() {
 		const success = green('+');
 
