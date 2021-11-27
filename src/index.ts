@@ -1,9 +1,11 @@
 import './lib/setup';
 import { LogLevel, SapphireClient } from '@sapphire/framework';
-import { MessageEmbed } from 'discord.js';
+import { ColorResolvable, MessageEmbed } from 'discord.js';
 import dotenv from "dotenv";
 import { channel } from 'diagnostics_channel';
 import { strictEqual } from 'assert';
+import { stat } from 'fs';
+import { fileURLToPath } from 'url';
 dotenv.config()
 const fetch = require('node-fetch');
 let membersJson = require("../json/members.json")
@@ -41,7 +43,12 @@ const main = async () => {
     // processCardsInList(`https://api.trello.com/1/lists/6190815c0659fb166a7e9c36/cards?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`)
     let lists:List[] = await getLists(`https://api.trello.com/1/boards/6190815575f5307e9c1f3221/lists/all?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`)
     console.log(lists)
-    sendReminders(lists)
+    // displayTasks(lists, (daysDueIn) => {
+    //   return (daysDueIn < 2)
+    // })
+    displayTasks(lists, (_daysDueIn:number, discordId:string) => {
+      return (discordId == "432685151760154625")
+    })
   } catch (error) {
 		client.logger.fatal(error);
 		client.destroy();
@@ -101,17 +108,41 @@ function getMembers(trelloIdMembers: string[]) {
  * sends reminders in a particular channel if a task is due late
  * @param list 
  */
-function sendReminders(lists: List[]){
+async function displayTasks(lists: List[], filter: (daysDueIn: number, discordId:string) => boolean){
   // list.cards.forEach((card: Card) => {
+  let status:string;
+  let fieldColor: ColorResolvable
   for (const list of lists) {
     for (const card of list.cards) {
       let members:Member[] = card.members
       for (const member of members) {
       // members.forEach( (member : Member) => {
-        if (card.daysDueIn <= 2){
+        console.log("========")
+        if (card.daysDueIn < 0) {
+          status = "overdue"
+          fieldColor = [255, 0, 0]
+          console.log("overdue!!!!")
+        }
+        else if (card.daysDueIn <= 2) {
+          status = "due very soon"
+          fieldColor = [237, 66, 69]
+          console.log("hi")
+        }
+        else if (card.daysDueIn <= 4) {
+            status = "due soon"
+          fieldColor = [239, 188, 18]
+          console.log("bye")
+        }
+        else {
+          status = "due soon"
+          fieldColor = [76, 175, 80]
+          console.log("cya")
+        }
+        // if (card.daysDueIn <= 2){
+        if (filter(card.daysDueIn, member.discordId)) {
           let dueLabel:string = (card.daysDueIn <= 0) ? "overdue by" : "due in"
           // get the discord user to dm using the discord id
-          client.users.fetch(member.discordId).then((user) => {
+          await client.users.fetch(member.discordId).then((user) => {
             // create an embedded message
             let embed = new MessageEmbed()
             .setAuthor(member.name,  user.avatarURL()?.toString(), '')
@@ -119,7 +150,9 @@ function sendReminders(lists: List[]){
             .setTitle(card.name)
             .addField(dueLabel, round(Math.abs(card.daysDueIn), 3)+" days")
             .addField('due', `${card.dueString}`)
-            .setColor([237, 66, 69])
+            .addField('status', status)
+            .setColor(fieldColor)
+            console.log(fieldColor)
             // send the message
             // client.channels.cache.get("695852556718440538").send({embeds: [embed]})
             const TargetChannel = client.channels.cache.get("695852556718440538")
