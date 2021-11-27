@@ -29,13 +29,9 @@ const main = async () => {
 		client.logger.info('Logging in');
 		await client.login();
 		client.logger.info('logged in');
-    let lists:List[] = await getLists("6190815575f5307e9c1f3221")
-    // displayTasks(client, "695852556718440538", lists, (_daysDueIn:number, discordId:string) => {
-    //   return (discordId == "545063650088452127")
-    // })
-    displayTasks(client, "695852556718440538", lists, (daysDueIn:number, _discordId:string) => {
-      return (daysDueIn != null && daysDueIn < 2)
-    })
+    
+
+    sendReminder(13, 53, 0)
 
   } catch (error) {
 		client.logger.fatal(error);
@@ -45,3 +41,22 @@ const main = async () => {
 };
 
 main();
+
+async function sendReminder(hour:number, minute: number, second: number) {
+  while (true) {
+    let now:any = new Date();
+    let then:any = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, second, 0)
+    let millisTill:number = then - now;
+    if (millisTill < 0) {
+        millisTill += 1000*60*60*24; // it's after x am/pm, try x am/pm tomorrow.
+    }
+    console.log("set timer for "+millisTill+"ms")
+    await new Promise(resolve => setTimeout(resolve, millisTill));
+    let lists:List[] = await getLists("6190815575f5307e9c1f3221")
+    displayTasks(client, "914272295047028776", lists, (daysDueIn:number, _discordId:string) => {
+      return (daysDueIn != null && daysDueIn < 2)
+      // return (discordId == "545063650088452127")
+    })
+  }
+  
+}
