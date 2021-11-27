@@ -3,6 +3,7 @@ import { LogLevel, SapphireClient } from '@sapphire/framework';
 import { MessageEmbed } from 'discord.js';
 import dotenv from "dotenv";
 import { channel } from 'diagnostics_channel';
+import { strictEqual } from 'assert';
 dotenv.config()
 const fetch = require('node-fetch');
 let membersJson = require("../json/members.json")
@@ -38,8 +39,10 @@ const main = async () => {
 		await client.login();
 		client.logger.info('logged in');
     // processCardsInList(`https://api.trello.com/1/lists/6190815c0659fb166a7e9c36/cards?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`)
-    processLists(`https://api.trello.com/1/boards/6190815575f5307e9c1f3221/lists/all?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`)
-	} catch (error) {
+    let lists:List[] = await getLists(`https://api.trello.com/1/boards/6190815575f5307e9c1f3221/lists/all?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`)
+    console.log(lists)
+    sendReminders(lists)
+  } catch (error) {
 		client.logger.fatal(error);
 		client.destroy();
 		process.exit(1);
@@ -68,7 +71,7 @@ const main = async () => {
 // helper function that takes in a list of trello member ids and returns a list of member objects with trello id, discord id, and discord name
 
 type Member = {trelloId: string, discordId:string, name:string};
-type Card = {name: string, daysDueIn: number, members: Member[]}
+type Card = {name: string, daysDueIn: number, members: Member[], dueString: string, desc: string}
 type List = {name:string, trelloId: string, cards: Card[]}
 
 function round(value:number, precision:number) {
@@ -80,17 +83,54 @@ function getMembers(trelloIdMembers: string[]) {
   // console.log(trelloIdMembers)
   let member:Member;
   let members = new Array<Member>()
+  let trelloId:string;
 
-  trelloIdMembers.forEach((trelloId: string) => { 
+  // trelloIdMembers.forEach((trelloId: string) => { 
+  for (const trelloId of trelloIdMembers) {
     member = {trelloId: trelloId, discordId: membersJson[trelloId].id, name: membersJson[trelloId].name}
     members.push(member)
-  })
+  }
 
   return members;
 
   // console.log(members)
 
 }
+
+/**
+ * sends reminders in a particular channel if a task is due late
+ * @param list 
+ */
+function sendReminders(lists: List[]){
+  // list.cards.forEach((card: Card) => {
+  for (const list of lists) {
+    for (const card of list.cards) {
+      let members:Member[] = card.members
+      for (const member of members) {
+      // members.forEach( (member : Member) => {
+        if (card.daysDueIn <= 2){
+          let dueLabel:string = (card.daysDueIn <= 0) ? "overdue by" : "due in"
+          // get the discord user to dm using the discord id
+          client.users.fetch(member.discordId).then((user) => {
+            // create an embedded message
+            let embed = new MessageEmbed()
+            .setAuthor(member.name,  user.avatarURL()?.toString(), '')
+            .setDescription(card.desc)
+            .setTitle(card.name)
+            .addField(dueLabel, round(Math.abs(card.daysDueIn), 3)+" days")
+            .addField('due', `${card.dueString}`)
+            .setColor([237, 66, 69])
+            // send the message
+            // client.channels.cache.get("695852556718440538").send({embeds: [embed]})
+            const TargetChannel = client.channels.cache.get("695852556718440538")
+            if (TargetChannel != undefined && TargetChannel.isText()) TargetChannel.send({embeds: [embed]})
+          });
+        }
+      }
+    }
+  }
+}
+
 /**
  * takes in list id and returns a list of cards
  * @param listId 
@@ -109,76 +149,57 @@ async function getList(listId: string){
     // console.log(listId)
     // console.log("Member id: "+obj[0]["idMembers"])
 
-    obj.forEach((element: { due: string, name:string, idMembers: string[], desc:string; }) => {
+    // obj.forEach((element: { due: string, name:string, idMembers: string[], desc:string; }) => {
+    for (const element of obj) {
     
       // if there is no due date set to the element, go to the next iteration in the for each loop
       if (element.due == null) return;
 
       // get the members!
-      members = getMembers(element.idMembers)
-      console.log("=================================================")
+      // console.log("=================================================")
       let dueDate:Date = new Date(element.due)
       let daysLeft:number = (dueDate.getTime() - Date.now())/(1000*60*60*24)
-      let card:Card = {name: element.name, daysDueIn: daysLeft, members: members}
+      members = getMembers(element.idMembers)
+      let card:Card = {name: element.name, daysDueIn: daysLeft, members: members, dueString: dueDate.toDateString(), desc: element.desc}
       cards.push(card)
-      
-      members.forEach( (member : Member) => {
-        
-        // if (daysLeft <= 2){
-        // if (true){
-          
-          let dueLabel:string = (daysLeft <= 0) ? "overdue by" : "due in"
-          // get the discord user to dm using the discord id
-          client.users.fetch(member.discordId).then((user) => {
-            // create an embedded message
-            let embed = new MessageEmbed()
-            .setAuthor(member.name,  user.avatarURL()?.toString(), '')
-            .setDescription(element.desc)
-            .setTitle(element.name)
-            .addField(dueLabel, round(Math.abs(daysLeft), 3)+" days")
-            .addField('due', `${dueDate.toDateString()}`)
-            .setColor([237, 66, 69])
-            // send the message
-            // client.channels.cache.get("695852556718440538").send({embeds: [embed]})
-            const TargetChannel = client.channels.cache.get("695852556718440538")
-            if (TargetChannel != undefined && TargetChannel.isText()) {
-              TargetChannel.send({embeds: [embed]})
-            }
-          })
-        // }  
-      });
-
-      console.log("=================================================")
-    });
+      // console.log("=================================================")
+    }
 
   })
 
   list = {name: "list", trelloId: listId, cards: cards}
   // console.log(cards)
   return list;
-
-}
-
-function processLists(url:any){
   
+} 
 
+async function getLists(url:any){
   console.log("opening url "+url)
   let obj: any;
-  fetch(url, {method: 'GET'}).then((res: { json: () => any; }) => res.json())
-  .then((data: any) => obj = data).then(() => {
+  let lists: List[] = [];
+  await fetch(url, {method: 'GET'}).then((res: { json: () => any; }) => res.json())
+  .then((data: any) => obj = data).then(async () => {
     // console.log(obj)
-    obj.forEach((element: { id: string, name:string}) => {
+    // obj.forEach((element: { id: string, name:string}) => {
+      for (const element of obj) {
       console.log(element.id)
       if (!listsToIgnoreJson["ids"].includes(element.id)) {
-        getList(element.id).then(
-          // myList => { 
-          //   console.log(JSON.stringify(myList,null,'  '))
-          // }
+          await getList(element.id).then(
+          myList => { 
+            lists.push(myList)
+            console.log("yo")
+            // console.log(JSON.stringify(myList,null,'  '))
+          }
         )
       }
-    });
-
+    }
+    //});
   })
+  // console.log(JSON.stringify(lists,null,'  '))
+  // console.log(lists)
+  // console.log("dofjfldajl;djfakl")
+
+  return lists
 }
 
 
