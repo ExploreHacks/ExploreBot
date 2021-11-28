@@ -1,24 +1,22 @@
 import { container } from '@sapphire/framework';
 import { send } from '@sapphire/plugin-editable-commands';
 import type { Message, Role, User } from 'discord.js';
-export async function addHoursToRoles(role: Role, hours: number, message: Message) {
+
+export async function addHoursToRoles(role: Role, hours: number, reason: string, message: Message) {
 	role.members.forEach(async (member) => {
 		container.logger.debug('member being added: ' + member.user.username);
-		return await addHoursToUser(member.user, hours, message);
+		return await addHoursToUser(member.user, hours, reason, message,);
 	});
 }
 
-export async function addHoursToUser(user: User, hours: number, message: Message ) {
-	hours = hours;
-	user = user;
-
+export async function addHoursToUser(user: User, hours: number, reason: string, message: Message ) {
 	let resource = {
-		values: [[user.username, hours, new Date().toLocaleString()]]
+		values: [[user.username, hours, new Date().toLocaleString(), reason]]
 	};
 	await container.sheets.spreadsheets.values.append(
 		{
 			spreadsheetId: process.env.SPREAD_SHEET_ID,
-			range: user.username + '!A:C',
+			range: user.username + '!A:D',
 			valueInputOption: 'USER_ENTERED',
 			insertDataOption: 'INSERT_ROWS',
                                                         // @ts-ignore: asdf
