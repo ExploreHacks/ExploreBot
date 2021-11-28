@@ -10,21 +10,19 @@ export async function addHoursToRoles(role: Role, hours: number, reason: string,
 }
 
 export async function addHoursToUser(user: User, hours: number, reason: string, message: Message ) {
-	let resource = {
-		values: [[user.username, hours, new Date().toLocaleString(), reason]]
-	};
+	let resource = { values: [[user.username, hours, new Date().toLocaleString(), reason]] };
 	await container.sheets.spreadsheets.values.append(
 		{
 			spreadsheetId: process.env.SPREAD_SHEET_ID,
 			range: user.username + '!A:D',
 			valueInputOption: 'USER_ENTERED',
 			insertDataOption: 'INSERT_ROWS',
-                                                        // @ts-ignore: asdf
+                        // @ts-ignore: asdf
 			resource
 		},
 		async (err: Error) => {
 			if (err) {
-				send(message, 'Failed to add: ' + user.username);
+				send(message, 'Failed to add: ' + user.username + "Because of " + err.name);
 
 				let sheets = await container.sheets.spreadsheets.get({
 					auth: container.auth,
