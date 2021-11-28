@@ -11,16 +11,12 @@ import { addHoursToRoles } from '../../lib/google-sheets/hours-backend';
 export class AddRolesHours extends Command {
 	public async messageRun(message: Message, args: Args) {
 		let role = await args.pick('role');
-		role = role;
-
 		let hours = await args.pick('number');
-		hours = hours;
                 const reason = await args.rest('string');
 
-		this.container.logger.debug('ROLES = ' + role.members.size);
+		this.container.logger.trace(`adding ${hours} hours to ${role} because they did ${reason}`);
 
 		addHoursToRoles(role, hours, reason, message);
-
 		send(message, 'role hours successfully added');
 	}
 }

@@ -5,7 +5,7 @@ const client = new SapphireClient({
 	defaultPrefix: '.',
 	caseInsensitiveCommands: true,
 	logger: {
-		level: LogLevel.Debug
+		level: LogLevel.Trace
 	},
 	shards: 'auto',
 	intents: [
