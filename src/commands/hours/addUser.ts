@@ -13,6 +13,8 @@ export class AddUserHours extends Command {
 		const user = await args.pick('user');
 		const hours = await args.pick('number');
                 const reason = await args.rest('string');
+
+                this.container.logger.trace(`Adding ${hours} to ${user.username} because they did ${reason}`)
                 
 		addHoursToUser(user, hours, reason, message, );
 		send(message, 'user hours successfully added');
