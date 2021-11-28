@@ -4,7 +4,7 @@ import {getLists, displayTasks, List} from './tasks/trelloTasks'
 
 // import { resolve } from 'path/posix';
 //TODO: extend me later
-const client = new SapphireClient({
+export const client = new SapphireClient({
 	defaultPrefix: '.',
 	caseInsensitiveCommands: true,
 	logger: {
@@ -42,6 +42,12 @@ const main = async () => {
 
 main();
 
+/**
+ * sends reminders at a certain time everyday in a specific channel
+ * @param hour 
+ * @param minute 
+ * @param second 
+ */
 async function sendReminder(hour:number, minute: number, second: number) {
   while (true) {
     let now:any = new Date();
