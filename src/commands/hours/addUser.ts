@@ -12,7 +12,9 @@ export class AddUserHours extends Command {
 	public async messageRun(message: Message, args: Args) {
 		const user = await args.pick('user');
 		const hours = await args.pick('number');
-		addHoursToUser(user, hours, message);
+                const reason = await args.rest('string');
+                
+		addHoursToUser(user, hours, reason, message, );
 		send(message, 'user hours successfully added');
 	}
 }

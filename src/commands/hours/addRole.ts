@@ -15,10 +15,11 @@ export class AddRolesHours extends Command {
 
 		let hours = await args.pick('number');
 		hours = hours;
+                const reason = await args.rest('string');
 
 		this.container.logger.debug('ROLES = ' + role.members.size);
 
-		addHoursToRoles(role, hours, message);
+		addHoursToRoles(role, hours, reason, message);
 
 		send(message, 'role hours successfully added');
 	}
