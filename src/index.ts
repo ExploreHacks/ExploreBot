@@ -1,11 +1,11 @@
 import './lib/setup';
-import { LogLevel, SapphireClient } from '@sapphire/framework';
+import { LogLevel, SapphireClient, container } from '@sapphire/framework';
 //TODO: extend me later
 const client = new SapphireClient({
 	defaultPrefix: '.',
 	caseInsensitiveCommands: true,
 	logger: {
-		level: LogLevel.Debug
+		level: LogLevel.Trace
 	},
 	shards: 'auto',
 	intents: [
@@ -26,6 +26,7 @@ const main = async () => {
 		client.logger.info('Logging in');
 		await client.login();
 		client.logger.info('logged in');
+		console.log(container.metaData);
 	} catch (error) {
 		client.logger.fatal(error);
 		client.destroy();
