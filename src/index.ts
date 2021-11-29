@@ -1,14 +1,12 @@
 import './lib/setup';
-import { LogLevel, SapphireClient } from '@sapphire/framework';
 import {getLists, displayTasks, List} from './tasks/trelloTasks'
-
-// import { resolve } from 'path/posix';
+import { LogLevel, SapphireClient, container } from '@sapphire/framework';
 //TODO: extend me later
 export const client = new SapphireClient({
 	defaultPrefix: '.',
 	caseInsensitiveCommands: true,
 	logger: {
-		level: LogLevel.Debug
+		level: LogLevel.Trace
 	},
 	shards: 'auto',
 	intents: [
@@ -29,10 +27,7 @@ const main = async () => {
 		client.logger.info('Logging in');
 		await client.login();
 		client.logger.info('logged in');
-    
-
-    sendReminder(13, 53, 0)
-
+    sendReminder(16, 0, 0)
   } catch (error) {
 		client.logger.fatal(error);
 		client.destroy();
