@@ -11,7 +11,8 @@ import { client } from '../../index';
 	aliases: ['ls']
 })
 export class ListTasks extends Command {
-	public async messageRun(message: Message, _args: Args) {
+	// , _args: Args
+	public async messageRun(message: Message) {
 		let lists:List[] = await getLists("6190815575f5307e9c1f3221")
 		let authorId:string = message.author.id
 		displayTasks(client, message.channelId, lists, (_daysDueIn:number, discordId:string) => {
