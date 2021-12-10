@@ -1,0 +1,1 @@
+{"version":3,"file":"addUser.d.ts","sourceRoot":"","sources":["../../../src/commands/hours/addUser.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAC;AAEpE,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,YAAY,CAAC;AAG1C,qBAIa,YAAa,SAAQ,OAAO;IAC3B,UAAU,CAAC,OAAO,EAAE,OAAO,EAAE,IAAI,EAAE,IAAI;CAUpD"}

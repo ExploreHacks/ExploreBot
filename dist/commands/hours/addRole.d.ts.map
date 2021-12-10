@@ -1,0 +1,1 @@
+{"version":3,"file":"addRole.d.ts","sourceRoot":"","sources":["../../../src/commands/hours/addRole.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAC;AAEpE,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,YAAY,CAAC;AAG1C,qBAIa,aAAc,SAAQ,OAAO;IAC5B,UAAU,CAAC,OAAO,EAAE,OAAO,EAAE,IAAI,EAAE,IAAI;CAUpD"}

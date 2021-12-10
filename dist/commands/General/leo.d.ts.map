@@ -1,0 +1,1 @@
+{"version":3,"file":"leo.d.ts","sourceRoot":"","sources":["../../../src/commands/General/leo.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,IAAI,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAC;AACpE,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,YAAY,CAAC;AAE1C,qBAGa,GAAI,SAAQ,OAAO;IAClB,UAAU,CAAC,OAAO,EAAE,OAAO,EAAE,IAAI,EAAE,IAAI;CAKpD"}
