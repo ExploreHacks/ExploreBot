@@ -10,7 +10,7 @@ export async function addHoursToRoles(role: Role, hours: number, reason: string,
 }
 
 export async function addHoursToUser(user: User, hours: number, reason: string, message: Message ) {
-	let resource = { values: [[user.username, hours, new Date().toLocaleString(), reason]] };
+	let resource = { values: [[user.username, hours, new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"}), reason]] };
 	await container.sheets.spreadsheets.values.append(
 		{
 			spreadsheetId: process.env.SPREAD_SHEET_ID,
