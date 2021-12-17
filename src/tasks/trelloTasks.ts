@@ -1,12 +1,9 @@
 import type { SapphireClient } from "@sapphire/framework";
 import { ColorResolvable, MessageEmbed } from "discord.js";
-import dotenv from "dotenv";
 
 const fetch = require('node-fetch');
 const membersJson = require("../../json/members.json")
 const listsToIgnoreJson = require("../../json/listsToIgnore.json")
-
-dotenv.config()
 
 // super useful types that we'll be using
 export type Member = {trelloId: string, discordId:string, name:string};
