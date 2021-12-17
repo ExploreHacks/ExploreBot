@@ -1,5 +1,6 @@
 import type { SapphireClient } from "@sapphire/framework";
 import { ColorResolvable, MessageEmbed } from "discord.js";
+import { container } from '@sapphire/framework';
 
 const fetch = require('node-fetch');
 const membersJson = require("../../json/members.json")
@@ -87,7 +88,7 @@ export async function displayTasks(client: SapphireClient, channelId:string, lis
 async function getList(listId: string){
 
   let url = `https://api.trello.com/1/lists/${listId}/cards?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`
-  console.log("opening url "+url)
+  container.logger.trace("opening url "+url)
   let obj: any, list: List
   let cards: Card[] = []
   let members: Member[] = []
@@ -119,24 +120,24 @@ async function getList(listId: string){
  */
 export async function getLists(boardId:string){
   let url: string = `https://api.trello.com/1/boards/${boardId}/lists/all?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`
-  console.log("opening url "+url) 
+  container.logger.trace("opening url "+url) 
   let obj: any;
   let lists: List[] = [];
   await fetch(url, {method: 'GET'}).then((res: { json: () => any; }) => res.json())
   .then((data: any) => obj = data).then(async () => {
       for (const element of obj) {
-      console.log(element.id)
+      container.logger.trace(element.id)
       if (!listsToIgnoreJson["ids"].includes(element.id)) {
           await getList(element.id).then(
           myList => { 
             lists.push(myList)
-            // console.log(JSON.stringify(myList,null,'  '))
+            // container.logger.trace(JSON.stringify(myList,null,'  '))
           }
         )
       }
     }
   })
-  console.log(JSON.stringify(lists,null,'  '))
+  container.logger.info(JSON.stringify(lists,null,'  '))
 
   return lists
 }
