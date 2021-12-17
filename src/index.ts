@@ -51,7 +51,7 @@ async function sendReminder(hour:number, minute: number, second: number) {
     if (millisTill < 0) {
         millisTill += 1000*60*60*24; // it's after x am/pm, try x am/pm tomorrow.
     }
-    console.log("set timer for "+millisTill+"ms")
+    client.logger.info("set timer for "+millisTill+"ms")
     await new Promise(resolve => setTimeout(resolve, millisTill));
     let lists:List[] = await getLists("6190815575f5307e9c1f3221")
     displayTasks(client, "914272295047028776", lists, (daysDueIn:number, _discordId:string) => {
