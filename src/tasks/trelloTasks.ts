@@ -88,7 +88,7 @@ export async function displayTasks(client: SapphireClient, channelId:string, lis
 async function getList(listId: string){
 
   let url = `https://api.trello.com/1/lists/${listId}/cards?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`
-  container.logger.trace("opening url "+url)
+  // container.logger.trace("opening url "+url)
   let obj: any, list: List
   let cards: Card[] = []
   let members: Member[] = []
@@ -120,13 +120,13 @@ async function getList(listId: string){
  */
 export async function getLists(boardId:string){
   let url: string = `https://api.trello.com/1/boards/${boardId}/lists/all?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`
-  container.logger.trace("opening url "+url) 
+  // container.logger.trace("opening url "+url) 
   let obj: any;
   let lists: List[] = [];
   await fetch(url, {method: 'GET'}).then((res: { json: () => any; }) => res.json())
   .then((data: any) => obj = data).then(async () => {
       for (const element of obj) {
-      container.logger.trace(element.id)
+      // container.logger.trace(element.id)
       if (!listsToIgnoreJson["ids"].includes(element.id)) {
           await getList(element.id).then(
           myList => { 
@@ -137,7 +137,7 @@ export async function getLists(boardId:string){
       }
     }
   })
-  container.logger.info(JSON.stringify(lists,null,'  '))
+  container.logger.debug(JSON.stringify(lists,null,'  '))
 
   return lists
 }

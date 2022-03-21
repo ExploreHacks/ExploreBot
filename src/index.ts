@@ -45,9 +45,9 @@ main();
  */
 async function sendReminder(hour:number, minute: number, second: number) {
   while (true) {
-    const now:Date = new Date();
-    const then:Date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, second, 0)
-    const millisTill:number = then - now;
+    const now:any = new Date(); // works only with any
+    const then:any = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, second, 0)
+    var millisTill:number = then - now;
     if (millisTill < 0) {
         millisTill += 1000*60*60*24; // it's after x am/pm, try x am/pm tomorrow.
     }
