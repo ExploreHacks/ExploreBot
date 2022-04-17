@@ -8,7 +8,7 @@ import { client } from '../../index';
 
 @ApplyOptions<CommandOptions>({
 	description: 'lists tasks of a user',
-	aliases: ['ls']
+	aliases: ['ls', 'list', 'listTasks']
 })
 export class ListTasks extends Command {
 	// , _args: Args

@@ -1,6 +1,7 @@
 import './lib/setup';
 import {getLists, displayTasks, List} from './tasks/trelloTasks'
-import { LogLevel, SapphireClient, container } from '@sapphire/framework';
+import { LogLevel, SapphireClient, container, Command } from '@sapphire/framework';
+
 //TODO: extend me later
 export const client = new SapphireClient({
 	defaultPrefix: '.',
