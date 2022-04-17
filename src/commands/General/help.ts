@@ -6,7 +6,7 @@ import { send } from '@sapphire/plugin-editable-commands';
 
 @ApplyOptions<CommandOptions>({
 	description: 'lists tasks of a user',
-	aliases: ['ls', 'list', 'listTasks']
+	aliases: ['help', 'h']
 })
 export class Help extends Command {
 	// , _args: Args

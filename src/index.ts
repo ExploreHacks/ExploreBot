@@ -1,6 +1,12 @@
 import './lib/setup';
 import {getLists, displayTasks, List} from './tasks/trelloTasks'
-import { LogLevel, SapphireClient, container, Command } from '@sapphire/framework';
+import { LogLevel, SapphireClient, container, Command, none } from '@sapphire/framework';
+import { Interaction } from 'discord.js';
+
+const fetch = require('node-fetch');
+
+
+
 
 //TODO: extend me later
 export const client = new SapphireClient({
@@ -22,6 +28,25 @@ export const client = new SapphireClient({
 		'DIRECT_MESSAGE_REACTIONS'
 	]
 });
+
+client.on("interactionCreate", async interaction=>{
+	if(interaction.isButton()){
+		if(interaction.customId.startsWith("completeTask")){
+			let cardId = interaction.customId.split(" ")[1]
+			client.logger.info('BUTTON CLICKED');
+			let url = `https://api.trello.com/1/cards/${cardId}?idList=6190816973f9bf40d3b08e6c&key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`
+			await fetch(url, {method: 'PUT'}).then((data: any) => { console.log(data) } )
+
+			interaction.update({
+				content: 'Task archived',
+				embeds: [],
+				components: []
+			})
+		}
+	}
+})
+
+
 
 const main = async () => {
 	try {

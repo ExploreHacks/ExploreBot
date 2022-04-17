@@ -1,6 +1,7 @@
 import type { SapphireClient } from "@sapphire/framework";
-import { ColorResolvable, MessageEmbed } from "discord.js";
+import { ColorResolvable, MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
 import { container } from '@sapphire/framework';
+
 
 const fetch = require('node-fetch');
 const membersJson = require("../../json/members.json")
@@ -8,7 +9,7 @@ const listsToIgnoreJson = require("../../json/listsToIgnore.json")
 
 // super useful types that we'll be using
 export type Member = {trelloId: string, discordId:string, name:string};
-export type Card = {name: string, daysDueIn: number, members: Member[], dueString: string, desc: string}
+export type Card = {name: string, daysDueIn: number, members: Member[], dueString: string, desc: string, trelloId: string}
 export type List = {name:string, trelloId: string, cards: Card[]}
 
 
@@ -31,6 +32,7 @@ function getMembers(trelloIdMembers: string[]) {
 
 	return members;
 }
+
 
 /**
  * filters out tasks from lists and displays it on a discord channel
@@ -69,9 +71,18 @@ export async function displayTasks(client: SapphireClient, channelId:string, lis
 				if (card.daysDueIn != null) {
 					embed.addField(dueLabel, round(Math.abs(card.daysDueIn), 3)+" days")
 				}
+
+				const myButton = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+					.setCustomId(`completeTask ${card.trelloId}`)
+					.setLabel('Mark as complete')
+					.setStyle('PRIMARY'),
+				);
+
 				// send embed message in channel
 				const TargetChannel = client.channels.cache.get(channelId)
-				if (TargetChannel != undefined && TargetChannel.isText()) TargetChannel.send({embeds: [embed]})
+				if (TargetChannel != undefined && TargetChannel.isText()) TargetChannel.send({embeds: [embed], components: [myButton]})
           });
         }
       }
@@ -105,7 +116,7 @@ async function getList(listId: string){
 			else { daysLeft = null!; dueDate = null!; dueString = "no due date given" }
 			
 			members = getMembers(element.idMembers)
-			let card:Card = {name: element.name, daysDueIn: daysLeft, members: members, dueString: dueString, desc: element.desc}
+			let card:Card = {name: element.name, daysDueIn: daysLeft, members: members, dueString: dueString, desc: element.desc, trelloId: element.id}
 			cards.push(card)
 		}
 	})
